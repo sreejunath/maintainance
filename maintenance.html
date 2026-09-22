@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>System Maintenance | METCA Institute</title>
+  
+  <!-- Native Web App & PWA Capabilities -->
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#071326" />
+  <meta name="description" content="METCA Institute of Teacher Education official maintenance page." />
+
+  <!-- Google Fonts: Plus Jakarta Sans & SF Pro Display inspired fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ==========================================================================
+       Native App Design Tokens & Reset
+       ========================================================================== */
+    :root {
+      --bg-canvas: #040c18;
+      --app-bg: #071326;
+      --surface-glass: rgba(15, 34, 64, 0.72);
+      --surface-card: rgba(18, 41, 77, 0.65);
+      --surface-elevated: rgba(26, 56, 102, 0.85);
+      --surface-pressed: rgba(37, 99, 235, 0.2);
+
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-focus: rgba(96, 165, 250, 0.4);
+      --border-glow: rgba(59, 130, 246, 0.3);
+
+      --blue-500: #3b82f6;
+      --blue-600: #2563eb;
+      --blue-400: #60a5fa;
+      --gold-500: #f59e0b;
+      --gold-400: #fbbf24;
+      --emerald-500: #10b981;
+      --emerald-400: #34d399;
+      --rose-500: #f43f5e;
+
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+      --text-muted: #64748b;
+
+      --radius-app: 44px;
+      --radius-card: 22px;
+      --radius-btn: 16px;
+      --radius-pill: 9999px;
+
+      --shadow-app: 0 30px 100px -20px rgba(0, 0, 0, 0.8), 0 0 50px rgba(37, 99, 235, 0.15);
+      --shadow-card: 0 10px 28px -6px rgba(0, 0, 0, 0.35);
+
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+
+      --spring-trans: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      --spring-bounce: 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--bg-canvas);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Display', Roboto, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Subtle background ambient mesh */
+    .bg-mesh {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .mesh-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.5;
+      animation: floatOrb 12s ease-in-out infinite alternate;
+    }
+    .orb-1 { width: 450px; height: 450px; top: -100px; left: -100px; background: radial-gradient(circle, #1d4ed8, transparent 70%); }
+    .orb-2 { width: 380px; height: 380px; bottom: -80px; right: -80px; background: radial-gradient(circle, #b45309, transparent 70%); animation-delay: -5s; }
+
+    @keyframes floatOrb {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(30px, 40px) scale(1.08); }
+    }
+
+    /* ==========================================================================
+       Native App Container Shell (Mobile First Viewport)
+       ========================================================================== */
+    .app-shell {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 440px;
+      min-height: 100vh;
+      background: var(--app-bg);
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-app);
+      overflow: hidden;
+      padding-top: calc(var(--safe-top) + 0.5rem);
+      padding-bottom: calc(var(--safe-bottom) + 5.5rem);
+    }
+
+    @media (min-width: 520px) {
+      body {
+        padding: 2rem 1rem;
+      }
+      .app-shell {
+        min-height: 890px;
+        height: auto;
+        border-radius: var(--radius-app);
+        border: 2px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 25px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(0,0,0,0.6), 0 0 40px rgba(59, 130, 246, 0.2);
+      }
+    }
+
+    /* ==========================================================================
+       Native Status Bar & Dynamic Island Header
+       ========================================================================== */
+    .ios-status-bar {
+      width: 100%;
+      padding: 0.65rem 1.6rem 0.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-main);
+      letter-spacing: -0.02em;
+    }
+
+    .island-pill {
+      height: 26px;
+      padding: 0 10px;
+      border-radius: var(--radius-pill);
+      background: #000;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .island-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--emerald-400);
+      box-shadow: 0 0 8px var(--emerald-400);
+      animation: pulseDot 2s infinite;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.6; }
+    }
+
+    .island-text {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #e2e8f0;
+    }
+
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* App Navigation Bar */
+    .app-navbar {
+      padding: 0.75rem 1.25rem 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .app-brand-left {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .app-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #2563eb, #1e3a8a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .app-brand-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+    }
+
+    .app-brand-subtitle {
+      font-size: 0.72rem;
+      color: var(--gold-400);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .nav-action-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-pill);
+      background: var(--surface-glass);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--spring-bounce);
+    }
+
+    .nav-action-btn:active {
+      transform: scale(0.9);
+      background: var(--surface-elevated);
+    }
+
+    /* ==========================================================================
+       Scrollable App Content
+       ========================================================================== */
+    .app-scroll-body {
+      flex: 1;
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+    .app-scroll-body::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Native Segmented Tab Switcher */
+    .segmented-control {
+      background: rgba(10, 25, 47, 0.85);
+      backdrop-filter: blur(12px);
+      padding: 4px;
+      border-radius: 14px;
+      display: flex;
+      border: 1px solid var(--border-subtle);
+      position: relative;
+    }
+
+    .segment-tab {
+      flex: 1;
+      padding: 8px 4px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-sub);
+      text-align: center;
+      border: none;
+      background: transparent;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: var(--spring-trans);
+    }
+
+    .segment-tab.active {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    }
+
+    /* Hero Status Card */
+    .native-card {
+      background: var(--surface-glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: var(--radius-card);
+      border: 1px solid var(--border-subtle);
+      padding: 1.4rem;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      position: relative;
+      overflow: hidden;
+      transition: var(--spring-trans);
+    }
+
+    .hero-banner {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.5rem 0;
+    }
+
+    /* Animated Maintenance Engine */
+    .hero-anim-box {
+      width: 90px;
+      height: 90px;
+      margin-bottom: 0.25rem;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .engine-pulse-glow {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.35) 0%, transparent 70%);
+      animation: pulseGlow 2.8s ease-in-out infinite alternate;
+    }
+
+    .hero-title {
+      font-size: 1.45rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      background: linear-gradient(135deg, #ffffff 40%, #93c5fd 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-title span {
+      background: linear-gradient(135deg, var(--gold-400), #f97316);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: 0.86rem;
+      color: var(--text-sub);
+      line-height: 1.55;
+    }
+
+    /* Progress Widget */
+    .app-progress-widget {
+      background: rgba(7, 19, 38, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+    }
+
+    .progress-tag {
+      font-weight: 600;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .progress-tag-percent {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--gold-400);
+      font-weight: 700;
+    }
+
+    .native-progress-track {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-pill);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .native-progress-fill {
+      width: 88%;
+      height: 100%;
+      background: linear-gradient(90deg, #2563eb, #3b82f6, var(--gold-400));
+      border-radius: var(--radius-pill);
+      position: relative;
+    }
+
+    .native-progress-fill::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+      animation: shimmerFlow 2s infinite;
+    }
+
+    @keyframes shimmerFlow {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    /* Tab Sections View Engine */
+    .tab-view {
+      display: none;
+      flex-direction: column;
+      gap: 1rem;
+      animation: tabFadeIn 0.35s ease-out forwards;
+    }
+    .tab-view.active-view {
+      display: flex;
+    }
+
+    @keyframes tabFadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Section Card Title */
+    .section-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding-left: 4px;
+    }
+
+    /* Native App List Cells */
+    .app-cell-group {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .app-cell {
+      padding: 0.9rem 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.85rem;
+      text-decoration: none;
+      color: inherit;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: var(--spring-trans);
+    }
+    .app-cell:last-child {
+      border-bottom: none;
+    }
+
+    .app-cell:active {
+      background: var(--surface-pressed);
+    }
+
+    .cell-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .icon-blue { background: rgba(59, 130, 246, 0.15); color: var(--blue-400); }
+    .icon-gold { background: rgba(245, 158, 11, 0.15); color: var(--gold-400); }
+    .icon-emerald { background: rgba(16, 185, 129, 0.15); color: var(--emerald-400); }
+
+    .cell-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .cell-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .cell-sub {
+      font-size: 0.78rem;
+      color: var(--text-sub);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .cell-arrow-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-pill);
+      background: rgba(255, 255, 255, 0.06);
+      border: none;
+      color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: var(--spring-trans);
+    }
+
+    .app-cell:hover .cell-arrow-btn {
+      background: var(--blue-600);
+      color: #fff;
+    }
+
+    /* Native Action Buttons (Touch Friendly) */
+    .app-btn {
+      width: 100%;
+      padding: 0.9rem 1.2rem;
+      border-radius: var(--radius-btn);
+      border: 1px solid transparent;
+      font-size: 0.92rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: var(--spring-bounce);
+    }
+
+    .app-btn:active {
+      transform: scale(0.97);
+    }
+
+    .app-btn-primary {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: #fff;
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+    }
+
+    .app-btn-outline {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.12);
+      color: var(--text-main);
+    }
+
+    /* Address Box Special Card */
+    .address-highlight {
+      line-height: 1.6;
+      font-size: 0.88rem;
+      color: #cbd5e1;
+      padding: 0.5rem 0;
+    }
+
+    /* ==========================================================================
+       Native Floating Bottom Dock Bar (iOS Tab Bar Style)
+       ========================================================================== */
+    .native-dock {
+      position: absolute;
+      bottom: calc(var(--safe-bottom) + 0.75rem);
+      left: 1.25rem;
+      right: 1.25rem;
+      height: 60px;
+      background: rgba(10, 25, 47, 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-pill);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(37, 99, 235, 0.2);
+      z-index: 100;
+    }
+
+    .dock-tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      transition: var(--spring-trans);
+    }
+
+    .dock-tab.active {
+      color: var(--blue-400);
+      background: rgba(59, 130, 246, 0.12);
+    }
+
+    .dock-tab span {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    /* ==========================================================================
+       Native App Haptic Toast Notification
+       ========================================================================== */
+    #native-toast {
+      position: absolute;
+      top: calc(var(--safe-top) + 4.5rem);
+      left: 1.25rem;
+      right: 1.25rem;
+      background: rgba(15, 34, 64, 0.96);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-glow);
+      padding: 0.8rem 1.1rem;
+      border-radius: 18px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.6), 0 0 20px rgba(59,130,246,0.3);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: #fff;
+      z-index: 999;
+      transform: translateY(-80px) scale(0.9);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #native-toast.show {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    @keyframes rotateGear {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Light Orbs -->
+  <div class="bg-mesh">
+    <div class="mesh-orb orb-1"></div>
+    <div class="mesh-orb orb-2"></div>
+  </div>
+
+  <!-- Mobile App Frame Shell -->
+  <div class="app-shell">
+    
+    <!-- Native iOS-style Status Bar -->
+    <div class="ios-status-bar">
+      <span id="clock-display">09:41</span>
+      
+      <!-- Dynamic Island Status Indicator -->
+      <div class="island-pill">
+        <span class="island-dot"></span>
+        <span class="island-text">Upgrading Server</span>
+      </div>
+
+      <div class="status-icons">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 18.25C2.9 16.51 2 14.36 2 12c0-5.52 4.48-10 10-10s10 4.48 10 10c0 2.36-.9 4.51-2.35 6.25l-.62-.64C20.26 16.07 21 14.12 21 12c0-4.97-4.03-9-9-9z"/><circle cx="12" cy="12" r="3"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M2 17h20v2H2zm1.15-4.05L4 11.97c3.1-1.07 6.45-1.07 9.55 0l.85.98-1.42 1.42a8.87 8.87 0 0 0-6.41 0l-1.42-1.42zM12 6a15.8 15.8 0 0 0-7.37 1.83l-.84-.97A17.17 17.17 0 0 1 12 4.5c2.97 0 5.79.79 8.21 2.36l-.84.97A15.8 15.8 0 0 0 12 6z"/></svg>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="7" width="18" height="10" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><rect x="4" y="9" width="12" height="6" rx="1.5"/><path d="M22 11v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+
+    <!-- App Top Bar -->
+    <header class="app-navbar">
+      <div class="app-brand-left">
+        <div class="app-avatar">M</div>
+        <div>
+          <h1 class="app-brand-title">METCA</h1>
+          <p class="app-brand-subtitle">Institute of Teacher Education</p>
+        </div>
+      </div>
+
+      <button class="nav-action-btn" onclick="triggerHaptic(); copyAllDetails();" title="Share & Copy Info">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+      </button>
+    </header>
+
+    <!-- Scrollable Mobile App Body -->
+    <main class="app-scroll-body">
+      
+      <!-- Top Segmented Tab Switcher -->
+      <nav class="segmented-control" role="tablist">
+        <button class="segment-tab active" id="seg-status" onclick="switchAppTab('status')">Overview</button>
+        <button class="segment-tab" id="seg-contacts" onclick="switchAppTab('contacts')">Hotlines</button>
+        <button class="segment-tab" id="seg-location" onclick="switchAppTab('location')">Location & Web</button>
+      </nav>
+
+      <!-- TAB 1: OVERVIEW & MAINTENANCE STATUS -->
+      <div class="tab-view active-view" id="view-status">
+        
+        <section class="native-card">
+          <div class="hero-banner">
+            <div class="hero-anim-box">
+              <div class="engine-pulse-glow"></div>
+              <svg width="68" height="68" viewBox="0 0 100 100" fill="none" style="animation: rotateGear 16s linear infinite;">
+                <circle cx="50" cy="50" r="30" stroke="#3b82f6" stroke-width="3" stroke-dasharray="8 6" fill="rgba(37,99,235,0.15)"/>
+                <circle cx="50" cy="50" r="14" fill="#071326" stroke="#fbbf24" stroke-width="2.5"/>
+                <circle cx="50" cy="50" r="5" fill="#60a5fa"/>
+              </svg>
+            </div>
+            
+            <h2 class="hero-title">System <span>Maintenance</span></h2>
+            <p class="hero-subtitle">
+              We are enhancing the METCA portal infrastructure for superior speed, security, and digital academic tools.
+            </p>
+          </div>
+
+          <!-- Dynamic Status Widget -->
+          <div class="app-progress-widget">
+            <div class="progress-header">
+              <span class="progress-tag">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--emerald-400)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Core Systems Upgrade
+              </span>
+              <span class="progress-tag-percent" id="live-percent">88% Done</span>
+            </div>
+            <div class="native-progress-track">
+              <div class="native-progress-fill" id="live-progress-bar"></div>
+            </div>
+          </div>
+
+          <!-- Quick Touch Action Buttons -->
+          <div style="display:flex; flex-direction:column; gap:0.65rem;">
+            <button class="app-btn app-btn-primary" onclick="simulatePing();">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+              <span>Refresh Status</span>
+            </button>
+            <a href="tel:6235556116" class="app-btn app-btn-outline">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--gold-400)"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              <span>Emergency Call: 6235556116</span>
+            </a>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- TAB 2: HOTLINES & DIRECT DIAL -->
+      <div class="tab-view" id="view-contacts">
+        
+        <div class="section-label">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Direct College Telephones
+        </div>
+
+        <div class="app-cell-group">
+          
+          <!-- Office Call -->
+          <a href="tel:6235556116" class="app-cell" onclick="triggerHaptic();">
+            <div class="cell-icon icon-blue">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </div>
+            <div class="cell-content">
+              <span class="cell-title">College Office Desk</span>
+              <span class="cell-sub">6235556116</span>
+            </div>
+            <button class="cell-arrow-btn" onclick="event.preventDefault(); copySingle('6235556116', 'Office Number');" title="Copy Number">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </button>
+          </a>
+
+          <!-- Principal Call -->
+          <a href="tel:9447697208" class="app-cell" onclick="triggerHaptic();">
+            <div class="cell-icon icon-gold">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div class="cell-content">
+              <span class="cell-title">Principal Desk</span>
+              <span class="cell-sub">9447697208</span>
+            </div>
+            <button class="cell-arrow-btn" onclick="event.preventDefault(); copySingle('9447697208', 'Principal Number');" title="Copy Number">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </button>
+          </a>
+
+          <!-- PRO Call -->
+          <a href="tel:9497717802" class="app-cell" onclick="triggerHaptic();">
+            <div class="cell-icon icon-emerald">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <div class="cell-content">
+              <span class="cell-title">Public Relations (PRO)</span>
+              <span class="cell-sub">9497717802</span>
+            </div>
+            <button class="cell-arrow-btn" onclick="event.preventDefault(); copySingle('9497717802', 'PRO Number');" title="Copy Number">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </button>
+          </a>
+
+        </div>
+
+        <!-- Direct Email Cell Group -->
+        <div class="section-label" style="margin-top:0.4rem;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Digital Mailbox
+        </div>
+
+        <div class="app-cell-group">
+          <a href="mailto:mitechavarcode@gmail.com" class="app-cell" onclick="triggerHaptic();">
+            <div class="cell-icon icon-blue">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div class="cell-content">
+              <span class="cell-title">Official College Email</span>
+              <span class="cell-sub" style="font-size:0.75rem;">mitechavarcode@gmail.com</span>
+            </div>
+            <div class="cell-arrow-btn">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </a>
+        </div>
+
+      </div>
+
+      <!-- TAB 3: LOCATION & WEB -->
+      <div class="tab-view" id="view-location">
+        
+        <div class="section-label">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Campus Location
+        </div>
+
+        <section class="native-card">
+          <div style="font-weight:700; color:#fff; font-size:1rem;">METCA Institute of Teacher Education</div>
+          <p class="address-highlight">
+            Metca Land, Chavarcode,<br />
+            Palayamkunnu P.O, Varkala,<br />
+            Thiruvananthapuram Dist. 695 146
+          </p>
+
+          <div style="display:flex; gap:0.6rem;">
+            <a href="https://maps.google.com/?q=METCA+Institute+of+Teacher+Education+Chavarcode+Varkala" target="_blank" rel="noopener noreferrer" class="app-btn app-btn-primary" style="padding:0.75rem 1rem;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+              Directions
+            </a>
+            <button class="app-btn app-btn-outline" style="padding:0.75rem 1rem;" onclick="copySingle('METCA Institute of Teacher Education, Metca Land, Chavarcode, Palayamkunnu P.O, Varkala, Thiruvananthapuram Dist. 695 146', 'Address');">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy
+            </button>
+          </div>
+        </section>
+
+        <div class="section-label" style="margin-top:0.4rem;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          Official Web Domain
+        </div>
+
+        <div class="app-cell-group">
+          <a href="http://www.bedmetcamite.in" target="_blank" rel="noopener noreferrer" class="app-cell" onclick="triggerHaptic();">
+            <div class="cell-icon icon-emerald">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            </div>
+            <div class="cell-content">
+              <span class="cell-title">College Portal</span>
+              <span class="cell-sub">www.bedmetcamite.in</span>
+            </div>
+            <div class="cell-arrow-btn">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </div>
+          </a>
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- Native Bottom Floating App Dock -->
+    <nav class="native-dock" aria-label="Bottom App Navigation">
+      <button class="dock-tab active" id="dock-status" onclick="switchAppTab('status')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        <span>Status</span>
+      </button>
+
+      <button class="dock-tab" id="dock-contacts" onclick="switchAppTab('contacts')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <span>Hotlines</span>
+      </button>
+
+      <button class="dock-tab" id="dock-location" onclick="switchAppTab('location')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span>Location</span>
+      </button>
+
+      <button class="dock-tab" onclick="copyAllDetails();">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span>Share</span>
+      </button>
+    </nav>
+
+    <!-- Native App Floating Toast -->
+    <div id="native-toast" role="alert">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--emerald-400);"><polyline points="20 6 9 17 4 12"/></svg>
+      <span id="toast-text">Action completed</span>
+    </div>
+
+  </div>
+
+  <script>
+    // 1. Live Native Clock Display
+    function updateClock() {
+      const now = new Date();
+      let hours = now.getHours();
+      let minutes = now.getMinutes();
+      minutes = minutes < 10 ? '0' + minutes : minutes;
+      hours = hours < 10 ? '0' + hours : hours;
+      document.getElementById('clock-display').textContent = `${hours}:${minutes}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // 2. Tactile Haptic Feedback Simulator
+    function triggerHaptic() {
+      if (navigator.vibrate) {
+        try { navigator.vibrate(15); } catch (e) {}
+      }
+    }
+
+    // 3. Tab Switching Architecture
+    function switchAppTab(tabName) {
+      triggerHaptic();
+
+      // Update segment buttons
+      document.querySelectorAll('.segment-tab').forEach(b => b.classList.remove('active'));
+      const segBtn = document.getElementById(`seg-${tabName}`);
+      if (segBtn) segBtn.classList.add('active');
+
+      // Update dock buttons
+      document.querySelectorAll('.dock-tab').forEach(d => d.classList.remove('active'));
+      const dockBtn = document.getElementById(`dock-${tabName}`);
+      if (dockBtn) dockBtn.classList.add('active');
+
+      // Update views
+      document.querySelectorAll('.tab-view').forEach(v => v.classList.remove('active-view'));
+      const targetView = document.getElementById(`view-${tabName}`);
+      if (targetView) targetView.classList.add('active-view');
+    }
+
+    // 4. Native Toast Component
+    let toastTimeout;
+    function showNativeToast(msg) {
+      triggerHaptic();
+      const toast = document.getElementById('native-toast');
+      const text = document.getElementById('toast-text');
+      text.textContent = msg;
+
+      toast.classList.add('show');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    // 5. Copy Helpers
+    function copySingle(text, label) {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => {
+          showNativeToast(`Copied ${label} to clipboard!`);
+        }).catch(() => fallbackCopy(text, label));
+      } else {
+        fallbackCopy(text, label);
+      }
+    }
+
+    function fallbackCopy(text, label) {
+      const input = document.createElement("input");
+      input.value = text;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand("copy");
+      document.body.removeChild(input);
+      showNativeToast(`Copied ${label}!`);
+    }
+
+    function copyAllDetails() {
+      const allText = `METCA Institute of Teacher Education
+Address: Metca Land, Chavarcode, Palayamkunnu P.O, Varkala, Thiruvananthapuram Dist. 695 146
+Email: mitechavarcode@gmail.com
+Website: www.bedmetcamite.in
+Phone:
+• Office: 6235556116
+• Principal: 9447697208
+• PRO: 9497717802`;
+      copySingle(allText, 'All METCA Contact Details');
+    }
+
+    // 6. Refresh Status Ping Simulator
+    let isPinging = false;
+    function simulatePing() {
+      if (isPinging) return;
+      isPinging = true;
+
+      showNativeToast('Connecting to server diagnostics...');
+
+      setTimeout(() => {
+        const percentEl = document.getElementById('live-percent');
+        const barEl = document.getElementById('live-progress-bar');
+        
+        let curr = parseInt(percentEl.textContent) || 88;
+        let next = Math.min(96, curr + Math.floor(Math.random() * 3) + 1);
+        
+        percentEl.textContent = `${next}% Done`;
+        barEl.style.width = `${next}%`;
+        
+        showNativeToast('Server Online: Maintenance nearing completion.');
+        isPinging = false;
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
